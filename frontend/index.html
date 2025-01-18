@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <input id="taskInput" type="text" placeholder="Enter a task">
+    <button onclick="addTask()">Add Task</button>
+    <button onclick="showTasks()">Show My Tasks</button>
+    <button id="testButton">Click Me</button> <!-- Added test button -->
+    <ul id="taskList"></ul>
+
+    <script>
+        const API_URL = 'http://192.168.0.122:3000/tasks';  // Use service name 'backend' instead of localhost
+
+        // Function to fetch tasks from the backend
+        async function fetchTasks() {
+            const response = await fetch(API_URL);
+            const tasks = await response.json();
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';  // Clear existing tasks
+
+            // Populate the task list
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.textContent = task.title;
+
+                // Add a delete button to each task
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteTask(task.id);
+                li.appendChild(deleteButton);
+
+                taskList.appendChild(li);
+            });
+        }
+
+        // Function to add a new task
+        async function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const title = taskInput.value;
+            if (!title) return;  // Don't add if input is empty
+
+            // Send the new task to the backend
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title })
+            });
+
+            taskInput.value = '';  // Clear input field
+            fetchTasks();  // Reload the task list
+        }
+
+        // Function to delete a task
+        async function deleteTask(id) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            fetchTasks();  // Reload the task list after deletion
+        }
+
+        // Function to show tasks when the button is clicked
+        function showTasks() {
+            fetchTasks();  // Fetch and display tasks from the database
+        }
+
+        // Automatically fetch tasks when the page loads
+        fetchTasks();
+
+        // Add event listener to the test button
+        document.getElementById('testButton').addEventListener('click', function() {
+            alert('Button clicked!');
+            console.log('Button clicked');
+        });
+    </script>
+</body>
+</html>
