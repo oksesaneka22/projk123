@@ -23,3 +23,6 @@ docker run -d --name frontend \
   --network app-network \
   -p 80:80 \
   oksesaneka22/projk:frontend1.2
+
+
+`docker compose up --build -d`

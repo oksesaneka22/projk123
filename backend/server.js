@@ -6,12 +6,8 @@ const cors = require('cors');
 const app = express();
 app.use(bodyParser.json());
 
-// Allow requests from frontend IP or URL
-app.use(cors({
-    origin: 'http://192.168.0.122',  // Change this to your frontend's IP or URL
-    methods: ['GET', 'POST', 'DELETE'],
-    credentials: true
-}));
+//  CORS 
+app.use(cors({ origin: '*' }));
 
 const db = mysql.createConnection({
     host: 'mysql',
@@ -28,7 +24,7 @@ setTimeout(() => {
             console.log('Connected to MySQL database.');
         }
     });
-}, 3000); // Delay of 15 seconds to ensure DB is ready
+}, 15000);
 
 app.get('/tasks', (req, res) => {
     db.query('SELECT * FROM tasks', (err, results) => {
@@ -40,6 +36,7 @@ app.get('/tasks', (req, res) => {
     });
 });
 
+
 app.post('/tasks', (req, res) => {
     const { title } = req.body;
     db.query('INSERT INTO tasks (title) VALUES (?)', [title], (err, result) => {
@@ -50,6 +47,7 @@ app.post('/tasks', (req, res) => {
         }
     });
 });
+
 
 app.delete('/tasks/:id', (req, res) => {
     const { id } = req.params;
@@ -63,5 +61,5 @@ app.delete('/tasks/:id', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+    console.log('Server is running on http://backend:3000');
 });
