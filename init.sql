@@ -4,3 +4,4 @@ CREATE TABLE IF NOT EXISTS tasks (
     description TEXT,
     completed BOOLEAN DEFAULT FALSE
 );
+ALTER TABLE tasks MODIFY title VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
