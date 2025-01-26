@@ -27,9 +27,9 @@
     <input id="taskInput" type="text" placeholder="Enter a task" />
     <button onclick="addTask()">Add Task</button>
     <button onclick="showTasks()">Show My Tasks</button>
+    <button id="deleteAllButton">Delete All Tasks</button>
     <button id="testButton">Click Me</button>
     <ul id="taskList"></ul>
-
     <script>
         const API_URL = 'http://51.20.140.233:3000/tasks';
 
@@ -71,6 +71,18 @@
             fetchTasks();
         }
 
+        async function deleteAllTasks() {
+            const response = await fetch(API_URL);
+            const tasks = await response.json();
+
+            // Delete all tasks one by one
+            for (const task of tasks) {
+                await fetch(`${API_URL}/${task.id}`, { method: 'DELETE' });
+            }
+
+            fetchTasks();
+        }
+
         function showTasks() {
             fetchTasks();
         }
@@ -81,6 +93,9 @@
             alert('Button clicked!');
             console.log('Test button clicked');
         });
+
+        // Add an event listener for the "Delete All Tasks" button
+        document.getElementById('deleteAllButton').addEventListener('click', deleteAllTasks);
     </script>
 </body>
 </html>
