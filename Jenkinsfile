@@ -5,7 +5,7 @@ pipeline {
         stage('run') {
             steps {
                 script {
-                    sh 'docker compose down'
+                    //sh 'docker compose down'
                     sh 'ls'
                     sh 'docker compose up --build -d'
                     sh 'sleep 10'
