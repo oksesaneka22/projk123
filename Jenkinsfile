@@ -9,7 +9,7 @@ pipeline {
                     sh 'ls'
                     sh 'docker compose up --build -d'
                     sh 'sleep 10'
-                    sh 'docker restart site-backend-1'
+                    sh 'docker restart site123-backend-1'
                 }
             }
         }
