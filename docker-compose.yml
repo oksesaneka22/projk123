@@ -30,12 +30,36 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount your init.sql file
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
 
+  backup:
+    image: alpine
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        apk add --no-cache mysql-client aws-cli
+        while true; do
+          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+          mysqldump -h mysql -u root -ppassword todo_db > /backup/db_backup_$TIMESTAMP.sql
+          aws s3 cp /backup/db_backup_$TIMESTAMP.sql s3://your-s3-bucket-name/mysql-backups/
+          sleep 86400
+        done
+    depends_on:
+      - mysql
+    volumes:
+      - ./backup:/backup
+    networks:
+      - app-network
+    environment:
+      AWS_ACCESS_KEY_ID: your-access-key
+      AWS_SECRET_ACCESS_KEY: your-secret-key
+      AWS_DEFAULT_REGION: your-region
+
 volumes:
   mysql_data:
+  backup:
 
 networks:
   app-network:
