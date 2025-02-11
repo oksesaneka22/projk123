@@ -11,6 +11,7 @@ services:
       - mysql
     networks:
       - app-network
+    restart: on-failure
 
   frontend:
     build:
@@ -20,6 +21,7 @@ services:
       - "80:80"
     networks:
       - app-network
+    restart: on-failure
 
   mysql:
     image: mysql:5.7
@@ -34,6 +36,7 @@ services:
       - ./backups:/backups  # Mount backup directory on host
     networks:
       - app-network
+    restart: on-failure
 
 volumes:
   mysql_data:
