@@ -25,4 +25,4 @@ docker run -d --name frontend \
   oksesaneka22/projk:frontend1.2
 
 
-`docker compose up --build -d`
+`docker-compose up --build -d`
