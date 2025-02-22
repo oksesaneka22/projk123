@@ -1,7 +1,23 @@
-FROM nginx:alpine
+# Use the official Node.js 18 image as a parent image
+FROM node:18-alpine
 
-COPY index.html /usr/share/nginx/html
+# Set the working directory
+WORKDIR /app
 
-EXPOSE 80
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-CMD ["nginx", "-g", "daemon off;"]
+# Install dependencies
+RUN npm ci
+
+# Copy the rest of your app's source code
+COPY . .
+
+# Build your Next.js app
+RUN npm run build
+
+# Expose the port Next.js runs on
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]
