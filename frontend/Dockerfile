@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of your app's source code
 COPY . .
@@ -17,7 +17,11 @@ COPY . .
 RUN npm run build
 
 # Expose the port Next.js runs on
-EXPOSE 3000
+EXPOSE 80
+
+# Set environment variables to listen on port 80 and all network interfaces
+ENV PORT 80
+ENV HOST 0.0.0.0
 
 # Start the app
 CMD ["npm", "start"]
